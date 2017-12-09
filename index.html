@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<header>
+
+</header>
+
+<body>
+
+<h1>User Registration</h1>
+
+<p>Registration:</p>
+<div id="content-registration">
+	<form action="/handler.php" method="post">
+		<label for="fullname">Full Name</label>
+		<input type="text" name="fullname" id="fullname" required>
+		<label for="email">Email Address</label>
+		<input type="email" name="email" id="email" required>
+		<label for="pwd">Password:</label>
+		<input type="password" class="form-control" name="pwd" id="pwd" required>
+		<input type="submit" value="Register Now">
+	</form>
+
+<h1>User Login</h1>
+
+<p>Login:</p>
+<div id="content-login">
+	<form action="/handler.php" method="post">
+		<label for="email">Email Address</label>
+		<input type="email" name="log-email" id="log-email" required>
+		<label for="pwd">Password:</label>
+		<input type="password" class="form-control" name="log-pwd" id="log-pwd" required>
+		<input type="submit" value="Log-in">
+	</form>
+</div>
+
+</body>
+
+<footer>
+
+</footer>
+</html>
