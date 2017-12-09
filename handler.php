@@ -104,7 +104,7 @@
 	$Handler->PostRequestExecute();
 	}
 	else {
-		echo "Qualcosa e` andato storto";
+		echo "Something went wrong...";
 	}
 // ***************** Main Handler End ***************** //
 
