@@ -1,0 +1,25 @@
+.nav-wrapper {
+	display: block;
+	width: 100%;
+	float: none;
+	position: relative;
+	text-align: center;
+	margin: 0 auto;	
+
+}
+#content-registration {
+	display: block;
+	width: 100%;
+	float: none;
+	position: relative;
+	text-align: center;
+	margin: 0 auto;
+}
+#content-login {
+	display: block;
+	width: 100%;
+	float: none;
+	position: relative;
+	text-align: center;
+	margin: 0 auto;
+}

@@ -1,13 +1,13 @@
 <?php
 	// ** Start of Initializing the external connection ** //
 	class DBConnection {
-	public static function DataBaseConnect() {
+	public static function DataBaseConnect($DB_NAME) {
 	try {
 		// * Start of External DB Connection * //    
 			$DB_HOST = 'localhost';
 			$DB_ID = 'root';
 			$DB_PW = '';
-			$DB_NAME = 'account';
+			//$DB_NAME = 'account';
 			// * End of External DB Connection * //
 			$conn = new PDO("mysql:host=$DB_HOST;dbname=$DB_NAME;charset=utf8;", $DB_ID);
 			// set the PDO error mode to exception
@@ -34,9 +34,19 @@
 
 // * Query handler start * //
 	class ExecuteQuery {
+		public static function TokenQuery() {
+			$my_temp_connection = new DBConnection();
+			$connect = $my_temp_connection->DataBaseConnect("token");
+			$stmt = $connect->prepare("SELECT token FROM token WHERE email=:email");
+			$stmt->bindParam(':email', $_POST['email']);
+			$stmt->execute();
+			$token = $stmt->fetch();
+			return $token['token'];
+		}
+		
 		public static function RegistrationQuery() {
 			$my_temp_connection = new DBConnection();
-			$connect = $my_temp_connection->DataBaseConnect();
+			$connect = $my_temp_connection->DataBaseConnect("account");
 			$stmt = $connect->prepare("INSERT INTO account(Name, Email, Pwd) VALUES (:fullname, :email, :password)");
 			$stmt->bindParam(':fullname', $_POST['fullname']);
 			$stmt->bindParam(':email', $_POST['email']);
@@ -48,7 +58,7 @@
 		}	
 		public static function LoginQuery() {
 			$my_temp_connection = new DBConnection();
-			$connect = $my_temp_connection->DataBaseConnect();
+			$connect = $my_temp_connection->DataBaseConnect("account");
 			$hash = $_POST['log-pwd'];
 			$stmt = $connect->prepare("SELECT Name,Pwd FROM account WHERE Email=:email");
 			$stmt->bindParam(':email', $_POST["log-email"]);
@@ -72,28 +82,39 @@
 
 // * Start of Validation for $_POST * //
 	class RequestValidation {
-		
+		public static function GetAccessToken() {
+			$TokenQuery = new ExecuteQuery();
+			$token = $TokenQuery->TokenQuery();
+			return $token;
+		}
 		public static function PostRequestExists() {
 			if (!empty($_POST)){ return true; }
 			else { return false; }
 		}
 		public static function PostRequestExecute() {
+			$token = "MyToken"; 
 		if (isset($_POST['log-email']) && isset($_POST['log-pwd'])) {
 			$LoginQuery = new ExecuteQuery();
 			$LoginQuery->LoginQuery();
 		}
-		elseif (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['pwd'])) {
+		elseif (isset($_POST['fullname']) && isset($_POST['email']) && isset($_POST['pwd']) && isset($_POST['reg-pwd'])) {
 			// registration
+			$Token = new RequestValidation();
+			if ($_POST['reg-pwd'] != $Token->GetAccessToken())
+			{
+				echo ('Wrong token, contact the system administrator to obtain one.');
+			}
+			else {
 			//echo "[Debug] POST_REQ DATA: <br>". "name:" . $_POST['fullname'] . "<br>" . "email:" . $_POST['email'] . "pwd:" . $_POST['pwd'];
 			$RegistrationQuery = new ExecuteQuery();    
 			$RegistrationQuery->RegistrationQuery();
+			}
 		}
 		else { echo "[Debug] POST_REQ DATA: <br>". "name:" . $_POST['fullname'] . "<br>" . "email:" . $_POST['log-email'] . "pwd:" . $_POST['pwd']; }
 		}
 	} // * RequestValidation Class End * //
 	// * If the request is not empty insert records in the database * //
 // * $_POST Validation end * //
-
 
 
 
